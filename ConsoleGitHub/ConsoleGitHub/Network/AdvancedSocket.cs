@@ -33,13 +33,13 @@ namespace ConsoleGitHub.Network
             Send(packet.Bytes);
         }
 
-        public ICommandPacket ReceivePacket()
+        public ICommandPacket RecivePacket()
         {
             var bytes = new byte[200];
             Receive(bytes);
             return PacketFarm.Get(bytes);
         }
-
+        
         public void SendArchive(IArchive archive)
         {
             var archSize = archive.SizeOfArchive();
@@ -49,9 +49,9 @@ namespace ConsoleGitHub.Network
                     Send(br.ReadBytes(PacketSize));
         }
 
-        public IArchive ReceiveArchive()
+        public IArchive RecieveArchive()
         {
-            var path = FileHelper.GetFreeTmpName(".zip");
+            var path = FileHelper.GetFreeTmpName(".tmp");
             var bytes = new byte[4];
             Receive(bytes);
             var fileSize = BitConverter.ToInt32(bytes, 0);
@@ -60,20 +60,24 @@ namespace ConsoleGitHub.Network
                 bytes = new byte[PacketSize];
                 for (var i = 0; i < fileSize; i += PacketSize)
                 {
-                    
+                    //if (i-fileSize<1000)
+                    //    bytes = new byte[i - fileSize];
+                    Receive(bytes);
+                    bw.Write(bytes);
                 }
-
             }
+            return new ArchiveZip(path);
         }
+        
 
         public Task SendArchiveAsync(IArchive arhcive)
         {
-            throw new NotImplementedException();
+            return Task.Run(() => SendArchive(arhcive));
         }
 
-        public Task<IArchive> ReciveArchiveAsync()
+        public Task<IArchive> RecieveArchiveAsync()
         {
-            throw new NotImplementedException();
+            return Task.Run(() => RecieveArchive());
         }
     }
 }

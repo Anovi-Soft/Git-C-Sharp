@@ -9,9 +9,9 @@ namespace ConsoleGitHub.Network
         void SendPacket(ICommandPacket packet);
         ICommandPacket RecivePacket();
         void SendArchive(IArchive archive);
-        IArchive ReceiveArchive();
+        IArchive RecieveArchive();
         Task SendArchiveAsync(IArchive arhcive);
-        Task<IArchive> ReceiveArchiveAsync();
+        Task<IArchive> RecieveArchiveAsync();
 
     }
 }
