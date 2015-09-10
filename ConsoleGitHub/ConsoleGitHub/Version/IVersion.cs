@@ -8,5 +8,7 @@ namespace ConsoleGitHub.Version
 {
     interface IVersion
     {
+        IVersion AddVersion(int i=0);
+        IVersion Parse(string version);
     }
 }
