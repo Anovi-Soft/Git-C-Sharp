@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Net;
+using System.Net.Sockets;
 using System.Threading;
+using System.Threading.Tasks;
 using ConsoleGitHub.Archive;
 
 namespace ConsoleGitHub
@@ -8,12 +11,9 @@ namespace ConsoleGitHub
     {
         static void Main(string[] args)
         {
-            Test();
-            while (true)
-            {
-                Thread.Sleep(10000);
-                Console.WriteLine("|||||||||||||||||||||||||||||||||||||");   
-            }
+            var a = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Udp);
+            a.Bind(new IPEndPoint(IPAddress.Any, 24001));
+            a.Listen(100);
         }
 
         static async void Test()

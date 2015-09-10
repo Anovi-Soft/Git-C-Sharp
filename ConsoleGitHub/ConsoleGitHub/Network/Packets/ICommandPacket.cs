@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace ConsoleGitHub.Network.Packets
 {
-    interface ICommandPacket
+    public interface ICommandPacket
     {
-
+        CommandType Command { get;}
+        string[] Args { get;}
+        byte[] Bytes { get; }
     }
 }

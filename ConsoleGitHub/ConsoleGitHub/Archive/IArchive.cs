@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace ConsoleGitHub.Archive
 {
-    interface IArchive
+    public interface IArchive
     {
         byte[] GetBytes();
         void SaveTo(string path);

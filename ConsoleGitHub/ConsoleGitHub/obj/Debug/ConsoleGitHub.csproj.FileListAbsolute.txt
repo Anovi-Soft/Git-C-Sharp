@@ -6,3 +6,6 @@ c:\users\andrew\documents\visual studio 2015\Projects\ConsoleGitHub\ConsoleGitHu
 c:\users\andrew\documents\visual studio 2015\Projects\ConsoleGitHub\ConsoleGitHub\obj\Debug\ConsoleGitHub.pdb
 C:\Users\Andrew\documents\visual studio 2015\Projects\ConsoleGitHub\ConsoleGitHub\bin\Debug\Ionic.Zip.dll
 C:\Users\Andrew\documents\visual studio 2015\Projects\ConsoleGitHub\ConsoleGitHub\bin\Debug\Ionic.Zip.xml
+C:\Users\Andrew\Documents\GitHub\Git-C-\ConsoleGitHub\ConsoleGitHub\bin\Debug\ConsoleGitHub.exe.config
+C:\Users\Andrew\Documents\GitHub\Git-C-\ConsoleGitHub\ConsoleGitHub\obj\Debug\ConsoleGitHub.exe
+C:\Users\Andrew\Documents\GitHub\Git-C-\ConsoleGitHub\ConsoleGitHub\obj\Debug\ConsoleGitHub.pdb

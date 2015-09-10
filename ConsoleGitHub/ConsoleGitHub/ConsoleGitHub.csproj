@@ -55,6 +55,10 @@
     <Compile Include="Data\FolderProvider.cs" />
     <Compile Include="Data\IDataProvider.cs" />
     <Compile Include="Data\IVersionDataProvider.cs" />
+    <Compile Include="Network\AdvancedSocket.cs" />
+    <Compile Include="Network\CommandType.cs" />
+    <Compile Include="Network\IAdvancedSocket.cs" />
+    <Compile Include="Network\Packets\CPacket.cs" />
     <Compile Include="Network\Packets\ICommandPacket.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

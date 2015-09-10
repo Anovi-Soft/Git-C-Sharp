@@ -10,14 +10,14 @@ using Ionic.Zip;
 
 namespace ConsoleGitHub.Archive
 {
-    class ArchiveZip : IArchive, IDisposable
+    public class ArchiveZip : IArchive, IDisposable
     {
         private readonly string _path;
         private readonly long _folderSize;
-        private ArchiveZip(string path, long folderSize)
+        public ArchiveZip(string path, long folderSize = -1)
         {
-            this._folderSize = folderSize;
-            this._path = path;
+            _folderSize = folderSize;
+            _path = path;
             FileHelper.SetReadOnlyHidden(path);
         }
 

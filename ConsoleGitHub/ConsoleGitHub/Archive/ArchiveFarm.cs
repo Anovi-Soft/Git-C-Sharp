@@ -8,9 +8,15 @@ namespace ConsoleGitHub.Archive
 {
     class ArchiveFarm
     {
-        static public IArchive Extreact(string path)
+        static public IArchive Open(string path)
         {
-            return null;
+            switch (path.Split('.').Last())
+            {
+                case "zip":
+                    return new ArchiveZip(path);
+                default:
+                    throw new FormatException($"Uncknown format {path.Split('.').Last()}");
+            }
         }
     }
 }
