@@ -44,6 +44,8 @@ namespace ConsoleGitHub.Data
                 size += Size(dir.FullName);
             return size;
         }
+        
+
         public static string GetFreeTmpName(string extension, string folder = "temp")
         {
             while (extension.StartsWith("."))

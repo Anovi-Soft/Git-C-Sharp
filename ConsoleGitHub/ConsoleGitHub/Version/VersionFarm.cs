@@ -6,11 +6,8 @@ using System.Threading.Tasks;
 
 namespace ConsoleGitHub.Version
 {
-    public interface IVersion
+    class VersionFarm
     {
-        IVersion AddVersion(int i=0);
-        IVersion Zero();
-        IVersion Parse(string version);
-
+        public static IVersion Parse(string version) => new BaseVersion().Parse(version);
     }
 }
