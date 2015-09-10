@@ -6,12 +6,14 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using ConsoleGitHub.Archive;
+using ConsoleGitHub.Data;
 using ConsoleGitHub.Network.Packets;
 
 namespace ConsoleGitHub.Network
 {
     public class AdvancedSocket:Socket, IAdvancedSocket
     {
+        private const int PacketSize = 1000;
         public AdvancedSocket(SocketType socketType, ProtocolType protocolType) : base(socketType, protocolType)
         {
         }
@@ -40,14 +42,28 @@ namespace ConsoleGitHub.Network
 
         public void SendArchive(IArchive archive)
         {
-            Send(BitConverter.GetBytes(archive.SizeOfArchive()));
-            using (var sr = new StreamReader(archive.Path))
-            using (var br = new BinaryReader(sr))
+            var archSize = archive.SizeOfArchive();
+            Send(BitConverter.GetBytes(archSize));
+            using (var br = new BinaryReader(File.Open(archive.Path, FileMode.Open, FileAccess.Read)))
+                for (var i =0; i < archSize; i+=PacketSize)
+                    Send(br.ReadBytes(PacketSize));
         }
 
         public IArchive ReceiveArchive()
         {
-            throw new NotImplementedException();
+            var path = FileHelper.GetFreeTmpName(".zip");
+            var bytes = new byte[4];
+            Receive(bytes);
+            var fileSize = BitConverter.ToInt32(bytes, 0);
+            using (var bw = new BinaryWriter(File.Open(path, FileMode.OpenOrCreate, FileAccess.Write)))
+            {
+                bytes = new byte[PacketSize];
+                for (var i = 0; i < fileSize; i += PacketSize)
+                {
+                    
+                }
+
+            }
         }
 
         public Task SendArchiveAsync(IArchive arhcive)
