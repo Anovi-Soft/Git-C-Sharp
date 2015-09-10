@@ -12,12 +12,13 @@ namespace ConsoleGitHub.Archive
 {
     public class ArchiveZip : IArchive, IDisposable
     {
-        private readonly string _path;
+        public string Path { get; }
+    
         private readonly long _folderSize;
         public ArchiveZip(string path, long folderSize = -1)
         {
             _folderSize = folderSize;
-            _path = path;
+            Path = path;
             FileHelper.SetReadOnlyHidden(path);
         }
 
@@ -48,13 +49,13 @@ namespace ConsoleGitHub.Archive
         public void SaveTo(string path)
         {
             FileHelper.CreateAllFolders(path);
-            File.Copy(_path, path, true);
+            File.Copy(Path, path, true);
             FileHelper.UnSetReadOnlyHidden(path);
         }
 
         public long SizeOfArchive()
         {
-            return new FileInfo(_path).Length;
+            return new FileInfo(Path).Length;
         }
 
         public long SizeOfDirectory()
@@ -66,7 +67,7 @@ namespace ConsoleGitHub.Archive
         {
             FileHelper.CreateAllFolders(path);
             if (path == null) throw new ArgumentNullException(nameof(path));
-            using (var zipFile = ZipFile.Read(_path))
+            using (var zipFile = ZipFile.Read(Path))
             {
                 if (statusChangeAction != null)
                     zipFile.ExtractProgress += (o, args) =>
@@ -82,13 +83,13 @@ namespace ConsoleGitHub.Archive
 
         public byte[] GetBytes()
         {
-            return File.ReadAllBytes(_path);
+            return File.ReadAllBytes(Path);
         }
 
         public void Dispose()
         {
-            FileHelper.UnSetReadOnlyHidden(_path);
-            File.Delete(_path);
+            FileHelper.UnSetReadOnlyHidden(Path);
+            File.Delete(Path);
         }
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ConsoleGitHub.Archive
 {
-    class ArchiveFarm
+    public class ArchiveFarm
     {
         static public IArchive Open(string path)
         {

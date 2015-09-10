@@ -5,6 +5,7 @@ namespace ConsoleGitHub.Archive
 {
     public interface IArchive
     {
+        string Path { get; }
         byte[] GetBytes();
         void SaveTo(string path);
         long SizeOfArchive();

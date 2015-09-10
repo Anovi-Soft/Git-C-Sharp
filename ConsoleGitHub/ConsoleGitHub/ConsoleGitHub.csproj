@@ -60,6 +60,7 @@
     <Compile Include="Network\IAdvancedSocket.cs" />
     <Compile Include="Network\Packets\CPacket.cs" />
     <Compile Include="Network\Packets\ICommandPacket.cs" />
+    <Compile Include="Network\Packets\PacketFarm.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Version\IVersion.cs" />

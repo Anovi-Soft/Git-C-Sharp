@@ -37,15 +37,12 @@ namespace ConsoleGitHub.Data
             long size = 0;
             if (File.Exists(path))
                 return new FileInfo(path).Length;
-            else if (Directory.Exists(path))
-            {
-                foreach (var file in new DirectoryInfo(path).GetFiles())
-                    size += file.Length;
-                foreach (var dir in new DirectoryInfo(path).GetDirectories())
-                    size += Size(dir.FullName);
-                return size;
-            }
-            throw new FileNotFoundException();
+            if (!Directory.Exists(path)) throw new FileNotFoundException();
+            foreach (var file in new DirectoryInfo(path).GetFiles())
+                size += file.Length;
+            foreach (var dir in new DirectoryInfo(path).GetDirectories())
+                size += Size(dir.FullName);
+            return size;
         }
         public static string GetFreeTmpName(string extension, string folder = "temp")
         {
