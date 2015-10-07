@@ -11,5 +11,7 @@ namespace ConsoleGitHub.Network.Packets
         CommandType Command { get;}
         string[] Args { get;}
         byte[] Bytes { get; }
+        int Error { get; }
+        string ErrorInfo { get; }
     }
 }

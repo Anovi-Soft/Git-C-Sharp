@@ -8,9 +8,9 @@ namespace ConsoleGitHub.Network.Packets
 {
     class PacketFarm
     {
-        public static ICommandPacket Get(byte[] bytes)
+        public static ICommandPacket GetFromBytes(byte[] bytes)
         {
-            return new CPacket(bytes);
+            return CPacket.FromBytes(bytes);
         }
         
     }

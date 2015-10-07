@@ -15,7 +15,7 @@ namespace ConsoleGitHub.Archive
                 case "zip":
                     return new ArchiveZip(path);
                 default:
-                    throw new FormatException($"Uncknown format {path.Split('.').Last()}");
+                    throw new FormatException($"Unknown format {path.Split('.').Last()}");
             }
         }
     }

@@ -9,7 +9,10 @@ using ConsoleGitHub.Data;
 
 namespace ConsoleGitHub.Data
 {
-    class FolderProvider : IDataProvider
+    /// <summary>
+    /// unused
+    /// </summary>
+    class FolderProvider : IVersionDataProvider
     {
         public void Delete(string directory)
         {
@@ -24,7 +27,7 @@ namespace ConsoleGitHub.Data
 
         public IArchive TakeArchive(string directory)
         {
-            return ArchiveFarm.Extreact(directory);
+            return ArchiveFarm.Open(directory);
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,12 +18,23 @@ namespace ConsoleGitHub.Network.Packets
         {
             Command = command;
             _args = args;
+            Error = 0;
+            ErrorInfo = "OK";
         }
 
-        public CPacket(byte[] bytes)
+        public CPacket(int error, string errorInfo)
         {
-            Command = (CommandType)BitConverter.ToInt16(bytes, 0);
-            _args = _encoding.GetString(bytes.Skip(2).ToArray());
+            Error = error;
+            ErrorInfo = errorInfo;
+        }
+
+        public static CPacket FromBytes(byte[] bytes)
+        {
+            IFormatter formatter = new BinaryFormatter();
+            using (var stream = new MemoryStream(bytes))
+            {
+                return (CPacket)formatter.Deserialize(stream);
+            }
         }
         public CommandType Command { get; }
         private readonly string _args;
@@ -32,10 +44,16 @@ namespace ConsoleGitHub.Network.Packets
         {
             get
             {
-                var a = BitConverter.GetBytes((short) Command).ToList();
-                a.AddRange(_encoding.GetBytes(_args));
-                return a.ToArray();
+                IFormatter formatter = new BinaryFormatter();
+                using (var stream = new MemoryStream())
+                {
+                    formatter.Serialize(stream, this);
+                    return stream.ToArray();
+                }
             }
         }
+
+        public int Error { get; }
+        public string ErrorInfo { get; }
     }
 }

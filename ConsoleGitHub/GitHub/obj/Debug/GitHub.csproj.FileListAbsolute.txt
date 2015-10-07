@@ -1,0 +1,6 @@
+C:\Users\Andrew\Documents\GitHub\Git-C-\ConsoleGitHub\GitHub\bin\Debug\GitHub.dll
+C:\Users\Andrew\Documents\GitHub\Git-C-\ConsoleGitHub\GitHub\bin\Debug\GitHub.pdb
+C:\Users\Andrew\Documents\GitHub\Git-C-\ConsoleGitHub\GitHub\bin\Debug\Ionic.Zip.dll
+C:\Users\Andrew\Documents\GitHub\Git-C-\ConsoleGitHub\GitHub\obj\Debug\GitHub.csprojResolveAssemblyReference.cache
+C:\Users\Andrew\Documents\GitHub\Git-C-\ConsoleGitHub\GitHub\obj\Debug\GitHub.dll
+C:\Users\Andrew\Documents\GitHub\Git-C-\ConsoleGitHub\GitHub\obj\Debug\GitHub.pdb

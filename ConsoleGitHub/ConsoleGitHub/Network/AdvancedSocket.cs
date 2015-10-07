@@ -28,16 +28,26 @@ namespace ConsoleGitHub.Network
 
         public void SendPacket(ICommandPacket packet)
         {
-            //var bytes = packet.Bytes;
-            //Send(BitConverter.GetBytes(bytes.Length));
+            var bytes = packet.Bytes;
+            Send(BitConverter.GetBytes(bytes.Length));
             Send(packet.Bytes);
+        }
+        public void SendPacket(CommandType commandType, string args)
+        {
+            SendPacket(new CPacket(commandType, args));
+        }
+        public void SendPacket(int error, string errorInfo)
+        {
+            SendPacket(new CPacket(error, errorInfo));
         }
 
         public ICommandPacket RecivePacket()
         {
-            var bytes = new byte[200];
+            var bytes = new byte[4];
             Receive(bytes);
-            return PacketFarm.Get(bytes);
+            bytes = new byte[BitConverter.ToInt32(bytes,0)];
+            Receive(bytes);
+            return PacketFarm.GetFromBytes(bytes);
         }
         
         public void SendArchive(IArchive archive)
@@ -51,7 +61,7 @@ namespace ConsoleGitHub.Network
 
         public IArchive RecieveArchive()
         {
-            var path = FileHelper.GetFreeTmpName(".tmp");
+            var path = FileHelper.GetFreeTmpName(".zip");
             var bytes = new byte[4];
             Receive(bytes);
             var fileSize = BitConverter.ToInt32(bytes, 0);
@@ -60,8 +70,8 @@ namespace ConsoleGitHub.Network
                 bytes = new byte[PacketSize];
                 for (var i = 0; i < fileSize; i += PacketSize)
                 {
-                    //if (i-fileSize<1000)
-                    //    bytes = new byte[i - fileSize];
+                    if (fileSize-i < PacketSize)
+                        bytes = new byte[fileSize - i];
                     Receive(bytes);
                     bw.Write(bytes);
                 }

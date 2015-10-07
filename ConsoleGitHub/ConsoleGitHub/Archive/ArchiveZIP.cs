@@ -10,7 +10,7 @@ using Ionic.Zip;
 
 namespace ConsoleGitHub.Archive
 {
-    public class ArchiveZip : IArchive, IDisposable
+    public class ArchiveZip : IArchive
     {
         public string Path { get; }
     
@@ -21,7 +21,12 @@ namespace ConsoleGitHub.Archive
             Path = path;
             FileHelper.SetReadOnlyHidden(path);
         }
-
+        ~ArchiveZip()
+        {
+            if (!File.Exists(Path)) return;
+            FileHelper.UnSetReadOnlyHidden(Path);
+            File.Delete(Path);
+        }
         public static ArchiveZip DirToZip(string directory, Action<int> statusChangeAction = null)
         {
             var path = FileHelper.GetFreeTmpName("zip");
@@ -85,11 +90,6 @@ namespace ConsoleGitHub.Archive
         {
             return File.ReadAllBytes(Path);
         }
-
-        public void Dispose()
-        {
-            FileHelper.UnSetReadOnlyHidden(Path);
-            File.Delete(Path);
-        }
+        
     }
 }
