@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
-using System.Threading.Tasks;
 using GitHub.Network;
-using GitHub.Packets;
 
-namespace ConsoleGitHub.Network.Packets
+namespace GitHub.Packets
 {
     [Serializable]
     public class CPacket:ICommandPacket
@@ -40,7 +36,11 @@ namespace ConsoleGitHub.Network.Packets
         }
         public CommandType Command { get; }
         private readonly string _args;
-        public string[] Args => _args.Split(' ');
+
+        public string[] Args => _args.Split(' ')
+            .Select(a => a)
+            .Where(a => a.Any())
+            .ToArray();
 
         public byte[] Bytes
         {
@@ -55,7 +55,32 @@ namespace ConsoleGitHub.Network.Packets
             }
         }
 
-        public int Error { get; }
-        public string ErrorInfo { get; }
+        public int Error { get; set; }
+
+        private string _errorInfo;
+        public string ErrorInfo
+        {
+            get { return _errorInfo; }
+            set
+            {
+                _errorInfo = value;
+                Error = 1;
+            }
+        }
+
+        public void SetAsInvalidArgument()
+        {
+            ErrorInfo = "Bad list of arguments";
+        }
+
+        public bool IsValidArguments(int count)
+        {
+            if (Args.Count() != count)
+            {
+                SetAsInvalidArgument();
+                return false;
+            }
+            return true;
+        }
     }
 }

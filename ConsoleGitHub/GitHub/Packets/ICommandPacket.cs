@@ -1,5 +1,4 @@
-﻿using ConsoleGitHub.Network;
-using GitHub.Network;
+﻿using GitHub.Network;
 
 namespace GitHub.Packets
 {
@@ -8,7 +7,9 @@ namespace GitHub.Packets
         CommandType Command { get;}
         string[] Args { get;}
         byte[] Bytes { get; }
-        int Error { get; }
-        string ErrorInfo { get; }
+        int Error { get; set; }
+        string ErrorInfo { get; set; }
+        void SetAsInvalidArgument();
+        bool IsValidArguments(int count);
     }
 }

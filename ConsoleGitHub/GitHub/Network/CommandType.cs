@@ -6,10 +6,13 @@ namespace GitHub.Network
     public enum CommandType: short
     {
         None,
+        Hello,
         Add,
         Update,
         Commit,
         Revert,
-        Log
+        Log,
+        Login,
+        Registration
     }
 }

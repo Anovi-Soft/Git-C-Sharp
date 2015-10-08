@@ -1,6 +1,4 @@
-﻿using ConsoleGitHub.Network.Packets;
-
-namespace GitHub.Packets
+﻿namespace GitHub.Packets
 {
     class PacketFarm
     {

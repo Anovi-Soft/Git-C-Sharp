@@ -2,7 +2,6 @@
 using System.IO;
 using System.Net.Sockets;
 using System.Threading.Tasks;
-using ConsoleGitHub.Network.Packets;
 using GitHub.Archive;
 using GitHub.Packets;
 using GitHub.Util;
@@ -11,7 +10,7 @@ namespace GitHub.Network
 {
     public class AdvancedSocket:Socket, IAdvancedSocket
     {
-        private const int PacketSize = 1000;
+        private const int PacketSize = 1024;
         public AdvancedSocket(SocketType socketType, ProtocolType protocolType) : base(socketType, protocolType)
         {
         }
@@ -34,10 +33,10 @@ namespace GitHub.Network
         {
             SendPacket(new CPacket(commandType, args));
         }
-        public void SendPacket(int error, string errorInfo)
-        {
-            SendPacket(new CPacket(error, errorInfo));
-        }
+        //public void SendPacket(int error, string errorInfo)
+        //{
+        //    SendPacket(new CPacket(error, errorInfo));
+        //}
 
         public ICommandPacket RecivePacket()
         {
@@ -86,6 +85,30 @@ namespace GitHub.Network
         public Task<IArchive> RecieveArchiveAsync()
         {
             return Task.Run(() => RecieveArchive());
+        }
+
+        public ICommandPacket RecivePacket(CommandType commandType)
+        {
+            var packet = RecivePacket();
+            while (packet.Command != commandType)
+            {
+                packet.ErrorInfo = $"The server is waiting for the {commandType} command";
+                SendPacket(packet);
+                packet = RecivePacket();
+            }
+            return packet;
+        }
+
+        public ICommandPacket SendAndRecivePacket(ICommandPacket packet)
+        {
+            SendPacket(packet);
+            return RecivePacket();
+        }
+
+        public ICommandPacket SendAndRecivePacket(CommandType commandType, string args)
+        {
+            SendPacket(commandType, args);
+            return RecivePacket();
         }
     }
 }
