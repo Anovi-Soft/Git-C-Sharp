@@ -17,8 +17,8 @@ namespace GitHubConsoleServer.Data
         public FolderProvider(string clientName, string ip="Unknown IP")
         {
             clientPath = Path.Combine(projectsPath, clientName);
-            logger = new Logger(clientPath, ip);
             if (!Directory.Exists(clientPath)) Directory.CreateDirectory(clientPath);
+            logger = new Logger(clientPath, ip);
         }
         private string FullPath(string name)
         {
@@ -30,8 +30,8 @@ namespace GitHubConsoleServer.Data
 
         public void PushProject(string name)
         {
-            var path = FullPath(name);
-            if(Directory.Exists(path))
+            var path = Path.Combine(clientPath, name);
+            if (Directory.Exists(path))
                 throw new GitHubException("Project allready exists");
             Directory.CreateDirectory(path);
             logger.Log(name, "Project pushed");

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +11,7 @@ using GitHub;
 using GitHub.Network;
 using GitHub.Packets;
 using GitHubConsoleServer.Auth;
+using GitHubConsoleServer.Data;
 using static System.String;
 
 namespace GitHubConsoleServer.Workers
@@ -18,27 +21,14 @@ namespace GitHubConsoleServer.Workers
         private AdvancedSocket socket;
         private string userName = Empty;
         private ICommandPacket packet;
+        private IVersionDataProvider provider;
         public void Run(object arg = null)
         {
             socket = arg as AdvancedSocket;
             if (socket == null) return;
-            
-            var auth = new BaseAuth(socket);
-            do
-            {
-                packet = socket.RecivePacket(CommandType.Auth);
-                switch (packet.Command)
-                {
-                    case CommandType.Login:
-                        userName = auth.Login(packet);
-                        break;
-                    case CommandType.Registration:
-                        userName = auth.Registration(packet);
-                        break;
-                    default:
-                        return;
-                }
-            } while (userName == Empty);
+            if (StepAuth()) return;
+            provider = new FolderProvider(userName, 
+                ((IPEndPoint)socket.socket.RemoteEndPoint).Address.ToString());
 
 
             while (true)
@@ -48,7 +38,7 @@ namespace GitHubConsoleServer.Workers
                     switch (packet.Command)
                     {
                         case CommandType.Add:
-
+                            Add();
                             break;
                         case CommandType.Clone:
 
@@ -79,7 +69,7 @@ namespace GitHubConsoleServer.Workers
                 }
                 catch (SocketException)
                 {
-                    Console.WriteLine("Connection lost");
+                    Console.WriteLine($"[{Logger.Time()}] Connection lost");
                 }
                 catch (Exception e)
                 {
@@ -90,12 +80,43 @@ namespace GitHubConsoleServer.Workers
                 {
                     socket.SendPacket(packet);
                 }
-
             
         }
+
+        private bool StepAuth()
+        {
+            var auth = new BaseAuth(socket);
+
+            try
+            {
+                do
+                {
+                    packet = socket.RecivePacket(CommandType.Auth);
+                    switch (packet.Command)
+                    {
+                        case CommandType.Login:
+                            userName = auth.Login(packet);
+                            break;
+                        case CommandType.Registration:
+                            userName = auth.Registration(packet);
+                            break;
+                        default:
+                            return true;
+                    }
+
+                } while (userName == Empty);
+            }
+            catch (SocketException)
+            {
+                Console.WriteLine($"[{Logger.Time()}] Connection lost");
+                return true;
+            }
+            return false;
+        }
+
         private void Add()
         {
-
+            provider.PushProject(packet.Args.First());
         }
         private void Clone()
         {

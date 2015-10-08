@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using GitHub.Network;
+using GitHubConsoleServer.Data;
 using GitHubConsoleServer.Workers;
 
 namespace GitHubConsoleServer
@@ -50,7 +51,7 @@ namespace GitHubConsoleServer
                     {
                         currentTasksCount++;
                         int numOfTask = listTasks.Count;
-                        Console.WriteLine($"[{DateTime.Now}]Task№{numOfTask} start working");
+                        Console.WriteLine($"[{Logger.Time()}] Task№{numOfTask} start working");
                         new BaseServerWorker().Run(_socket);
                         _socket.Close();
                         return numOfTask;
@@ -61,7 +62,7 @@ namespace GitHubConsoleServer
                     task.ContinueWith(numOfTask =>
                     {
                         currentTasksCount--;
-                        Console.WriteLine($"[{DateTime.Now}]Task№{numOfTask} end working");
+                        Console.WriteLine($"[{Logger.Time()}] Task№{numOfTask} end working");
                     });
                 }
                 catch (Exception e)
@@ -75,7 +76,7 @@ namespace GitHubConsoleServer
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello Client");
+            Console.WriteLine($"[{Logger.Time()}] Hello Server!");
             var task = Task.Factory.StartNew(() => MainLoop(new BaseServerWorker()));
             while (!task.IsCompleted)
             {

@@ -12,7 +12,7 @@ namespace GitHub.Network
     {
         private const int PacketSize = 1024;
         public static int Port = 23232;
-        private Socket socket;
+        public Socket socket;
         //public AdvancedSocket(Socket socket) : base(socket.AddressFamily, socket.SocketType, socket.ProtocolType)
         //{
 

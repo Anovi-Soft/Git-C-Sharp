@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using GitHub.Network;
 using GitHub.Packets;
+using GitHubConsoleServer.Data;
 
 namespace GitHubConsoleServer.Auth
 {
@@ -26,6 +27,7 @@ namespace GitHubConsoleServer.Auth
         }
         public string Login(ICommandPacket packet)
         {
+
             Load();
             if (packet.IsInvalidArguments(2))
             {
@@ -36,6 +38,7 @@ namespace GitHubConsoleServer.Auth
                 dictAuth[packet.Args.First()] == packet.Args.Last())
             {
                 socket.SendPacket(packet);
+                Console.WriteLine($"[{Logger.Time()}] User {packet.Args.First()} logined");
                 return packet.Args.First();
             }
             packet.ErrorInfo = "Wrong login or password";
@@ -56,6 +59,7 @@ namespace GitHubConsoleServer.Auth
             if (packet.Error != 0)
                 return string.Empty;
             dictAuth.Add(packet.Args.First(), packet.Args.Last());
+            Console.WriteLine($"[{Logger.Time()}] User {packet.Args.First()} registration end");
             Dump();
             return packet.Args.First();
         }

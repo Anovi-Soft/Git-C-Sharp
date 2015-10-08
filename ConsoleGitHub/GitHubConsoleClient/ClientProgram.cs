@@ -1,7 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net.Sockets;
+using System.Runtime.Hosting;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using GitHub.Network;
@@ -12,18 +17,31 @@ namespace GitHubConsoleClient
     {
         static void Main(string[] args)
         {
+            Console.WriteLine("Hello Client");
             socket =
                new AdvancedSocket(
                    new Socket(
                        AddressFamily.InterNetwork,
                        SocketType.Stream,
                        ProtocolType.Tcp));
-            //HELLO
-            if (!Hello()) return;
-            //AUTH
-            while (Auth());
-            //WORK
-            Work();
+            try
+            {
+                //HELLO
+                if (!Hello()) return;
+                //AUTH
+                while (Auth()) ;
+                //WORK
+                Work();
+            }
+            catch (SocketException)
+            {
+                Console.WriteLine("Connection lost");
+            }
+            catch (GitHub.GitHubException)
+            {
+                
+            }
+            Console.ReadKey();
         }
         private static string yn = "[y/n]";
         private static AdvancedSocket socket;
@@ -69,9 +87,128 @@ namespace GitHubConsoleClient
             return true;
         }
 
+
+        private static BinaryFormatter formatter = new BinaryFormatter();
+        private static void Load()
+        {
+           
+            if (File.Exists("list.bin"))
+                using (var fs = new FileStream("list.bin", FileMode.Open, FileAccess.Read))
+                    namesList = (HashSet<string>)formatter.Deserialize(fs);
+            else
+                namesList = new HashSet<string>();
+        }
+
+        private static void Dump()
+        {
+            using (var fs = new FileStream("list.bin", FileMode.OpenOrCreate, FileAccess.Write))
+                formatter.Serialize(fs, namesList);
+        }
+        private static Dictionary<string, Action<string[]>> commandTranslation =
+            new Dictionary<string, Action<string[]>>
+            {
+                {"help", Help},
+                {"set", Set},
+                {"project", Project},
+                {"list", CList},
+                {"add", Add},
+                {"clone", Clone},
+                {"update", Update},
+                {"commit", Commit},
+                {"revert", Revert},
+                {"log", Log}
+            };
+
+        private static HashSet<string> namesList = new HashSet<string>();
+        private static string currentProject = "";
         static void Work()
         {
-            
+            Load();
+            try
+            {
+                while (true)
+                {
+                    var line = Console.ReadLine().Split(' ').Select(a=>a.Trim());
+                    if (!commandTranslation.ContainsKey(line.First()))
+                    {
+                        Console.WriteLine("Unknown input");
+                        continue;
+                    }
+                    commandTranslation[line.First()].Invoke(line.Skip(1).ToArray());
+                }
+            }
+            catch(Exception)
+            {
+                Console.WriteLine("Connection lost");
+            }
+            Dump();
+            Console.ReadKey();
+        }
+
+        static void Help(string[] args)
+        {
+            if (!args.Any())
+            {
+                Console.WriteLine("List of commands:");
+                foreach (var key in commandTranslation.Keys)
+                {
+                    Console.WriteLine($" - {key}");
+                }
+                Console.WriteLine("Use 'help X' where X in list of commands");
+            }
+            else
+            {
+                Console.WriteLine("Command 'help X' where X in list of commands unwork");
+            }
+        }
+        static void Set(string[] args)
+        {
+            if (!args.Any() || !namesList.Contains(args.First()))
+            {
+                Console.WriteLine("Wrong arguments");
+                return;
+            }
+            Console.WriteLine("OK");
+        }
+        static void Project(string[] args)
+        {
+            Console.WriteLine(currentProject == string.Empty ? 
+                "Project unset" :
+                currentProject);
+        }
+
+        static void CList(string[] args)
+        {
+            if (!namesList.Any())
+                Console.WriteLine("List empty");
+            else
+                foreach (var name in namesList)
+                    Console.WriteLine($" - {name}");
+        }
+        static void Add(string[] args)
+        {
+            var packet = socket.SendAndRecivePacket(CommandType.Add, args[0]);
+            Console.WriteLine(packet.ErrorInfo);
+        }
+        static void Clone(string[] args)
+        {
+
+        }
+        static void Update(string[] args)
+        {
+
+        }
+        static void Commit(string[] args)
+        {
+
+        }
+        static void Revert(string[] args)
+        {
+
+        }
+        static void Log(string[] args)
+        {
+
         }
     }
 }
