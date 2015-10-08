@@ -51,7 +51,7 @@
     <Compile Include="Network\AdvancedSocket.cs" />
     <Compile Include="Network\CommandType.cs" />
     <Compile Include="Network\IAdvancedSocket.cs" />
-    <Compile Include="Packets\CPacket.cs" />
+    <Compile Include="Packets\CommandPacket.cs" />
     <Compile Include="Packets\ICommandPacket.cs" />
     <Compile Include="Packets\PacketFarm.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

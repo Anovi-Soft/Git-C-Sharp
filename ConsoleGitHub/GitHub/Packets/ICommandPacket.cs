@@ -10,6 +10,6 @@ namespace GitHub.Packets
         int Error { get; set; }
         string ErrorInfo { get; set; }
         void SetAsInvalidArgument();
-        bool IsValidArguments(int count);
+        bool IsInvalidArguments(int count);
     }
 }

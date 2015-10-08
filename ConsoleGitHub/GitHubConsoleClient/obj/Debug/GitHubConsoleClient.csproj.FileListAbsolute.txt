@@ -1,0 +1,9 @@
+C:\Users\Andrew\Documents\GitHub\Git-C-\ConsoleGitHub\GitHubConsoleClient\bin\Debug\GitHubConsoleClient.exe.config
+C:\Users\Andrew\Documents\GitHub\Git-C-\ConsoleGitHub\GitHubConsoleClient\bin\Debug\GitHubConsoleClient.exe
+C:\Users\Andrew\Documents\GitHub\Git-C-\ConsoleGitHub\GitHubConsoleClient\bin\Debug\GitHubConsoleClient.pdb
+C:\Users\Andrew\Documents\GitHub\Git-C-\ConsoleGitHub\GitHubConsoleClient\bin\Debug\GitHub.dll
+C:\Users\Andrew\Documents\GitHub\Git-C-\ConsoleGitHub\GitHubConsoleClient\bin\Debug\Ionic.Zip.dll
+C:\Users\Andrew\Documents\GitHub\Git-C-\ConsoleGitHub\GitHubConsoleClient\bin\Debug\GitHub.pdb
+C:\Users\Andrew\Documents\GitHub\Git-C-\ConsoleGitHub\GitHubConsoleClient\obj\Debug\GitHubConsoleClient.exe
+C:\Users\Andrew\Documents\GitHub\Git-C-\ConsoleGitHub\GitHubConsoleClient\obj\Debug\GitHubConsoleClient.pdb
+C:\Users\Andrew\Documents\GitHub\Git-C-\ConsoleGitHub\GitHubConsoleClient\obj\Debug\GitHubConsoleClient.csprojResolveAssemblyReference.cache

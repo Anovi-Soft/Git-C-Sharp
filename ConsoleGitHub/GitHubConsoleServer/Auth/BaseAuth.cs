@@ -6,6 +6,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 using GitHub.Network;
+using GitHub.Packets;
 
 namespace GitHubConsoleServer.Auth
 {
@@ -15,20 +16,18 @@ namespace GitHubConsoleServer.Auth
         private string dictAuthPath = "auth.bin";
         private Dictionary<string, string> dictAuth; 
         private Dictionary<string, string> stockDictAuth = 
-            new Dictionary<string, string>{ {"Admin","1234qwer"} };
+            new Dictionary<string, string> { {"Admin","1234qwer"} };
         private AdvancedSocket socket;
         private BinaryFormatter formatter = new BinaryFormatter();
         public BaseAuth(AdvancedSocket advancedSocket)
         {
             socket = advancedSocket;
-            bool initEnd = false;
             Load();
         }
-        public string Login()
+        public string Login(ICommandPacket packet)
         {
             Load();
-            var packet = socket.RecivePacket(CommandType.Login);
-            if (!packet.IsValidArguments(2))
+            if (packet.IsInvalidArguments(2))
             {
                 socket.SendPacket(packet);
                 return string.Empty;
@@ -44,11 +43,11 @@ namespace GitHubConsoleServer.Auth
             return string.Empty;
         }
 
-        public string Registration()
+        public string Registration(ICommandPacket packet)
         {
             Load();
-            var packet = socket.RecivePacket(CommandType.Registration);
-            if (!packet.IsValidArguments(2)) {}
+            if (packet.IsInvalidArguments(2))
+            { }
             else if (dictAuth.ContainsKey(packet.Args.First()))
                 packet.ErrorInfo = $"Name '{packet.Args.First()}' is busy";
             
@@ -56,7 +55,7 @@ namespace GitHubConsoleServer.Auth
 
             if (packet.Error != 0)
                 return string.Empty;
-            
+            dictAuth.Add(packet.Args.First(), packet.Args.Last());
             Dump();
             return packet.Args.First();
         }

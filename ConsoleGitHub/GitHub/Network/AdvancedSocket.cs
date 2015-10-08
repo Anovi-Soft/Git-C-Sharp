@@ -8,20 +8,25 @@ using GitHub.Util;
 
 namespace GitHub.Network
 {
-    public class AdvancedSocket:Socket, IAdvancedSocket
+    public class AdvancedSocket: IAdvancedSocket
     {
         private const int PacketSize = 1024;
-        public AdvancedSocket(SocketType socketType, ProtocolType protocolType) : base(socketType, protocolType)
+        public static int Port = 23232;
+        private Socket socket;
+        //public AdvancedSocket(Socket socket) : base(socket.AddressFamily, socket.SocketType, socket.ProtocolType)
+        //{
+
+        //}
+        public AdvancedSocket(Socket socket)
         {
+            this.socket = socket;
         }
 
-        public AdvancedSocket(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType) : base(addressFamily, socketType, protocolType)
-        {
-        }
+        private void Send(byte[] bytes) => socket.Send(bytes);
+        private void Receive(byte[] bytes) => socket.Receive(bytes);
+        public void Connect(string ip, int port) => socket.Connect(ip, port);
+        public void Close() => socket.Close();
 
-        public AdvancedSocket(SocketInformation socketInformation) : base(socketInformation)
-        {
-        }
 
         public void SendPacket(ICommandPacket packet)
         {
@@ -31,11 +36,11 @@ namespace GitHub.Network
         }
         public void SendPacket(CommandType commandType, string args)
         {
-            SendPacket(new CPacket(commandType, args));
+            SendPacket(new CommandPacket(commandType, args));
         }
         //public void SendPacket(int error, string errorInfo)
         //{
-        //    SendPacket(new CPacket(error, errorInfo));
+        //    SendPacket(new CommandPacket(error, errorInfo));
         //}
 
         public ICommandPacket RecivePacket()
@@ -90,7 +95,7 @@ namespace GitHub.Network
         public ICommandPacket RecivePacket(CommandType commandType)
         {
             var packet = RecivePacket();
-            while (packet.Command != commandType)
+            while ((packet.Command & commandType)==0)
             {
                 packet.ErrorInfo = $"The server is waiting for the {commandType} command";
                 SendPacket(packet);

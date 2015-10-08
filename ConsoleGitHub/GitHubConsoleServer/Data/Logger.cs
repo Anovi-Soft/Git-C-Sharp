@@ -29,7 +29,10 @@ namespace GitHubConsoleServer.Data
             if (!File.Exists(projectsLogsPath)) File.Create(projectsLogsPath);
             if (!File.Exists(allLogsPath)) File.Create(allLogsPath);
             File.AppendAllLines(projectsLogsPath, info);
-            File.AppendAllLines(allLogsPath, info.Select(a=> $"[{projectName}]{a}"));
+            info = info.Select(a => $"[{projectName}]{a}");
+            File.AppendAllLines(allLogsPath, info);
+            foreach(var line in info)
+                Console.WriteLine(line);
         }
 
         public string Info(string projectName = null)

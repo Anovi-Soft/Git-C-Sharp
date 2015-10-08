@@ -8,6 +8,6 @@ namespace GitHubConsoleServer.Workers
 {
     interface IWorker
     {
-        void Run(Object arg = null);
+        void Run(object arg = null);
     }
 }

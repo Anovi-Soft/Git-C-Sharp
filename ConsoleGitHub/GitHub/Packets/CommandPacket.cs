@@ -9,29 +9,29 @@ using GitHub.Network;
 namespace GitHub.Packets
 {
     [Serializable]
-    public class CPacket:ICommandPacket
+    public class CommandPacket:ICommandPacket
     {
         private readonly Encoding _encoding = Encoding.Unicode;
-        public CPacket(CommandType command, string args)
+        public CommandPacket(CommandType command, string args)
         {
             Command = command;
             _args = args;
-            Error = 0;
             ErrorInfo = "OK";
+            Error = 0;
         }
 
-        public CPacket(int error, string errorInfo)
+        public CommandPacket(int error, string errorInfo)
         {
             Error = error;
             ErrorInfo = errorInfo;
         }
 
-        public static CPacket FromBytes(byte[] bytes)
+        public static CommandPacket FromBytes(byte[] bytes)
         {
             IFormatter formatter = new BinaryFormatter();
             using (var stream = new MemoryStream(bytes))
             {
-                return (CPacket)formatter.Deserialize(stream);
+                return (CommandPacket)formatter.Deserialize(stream);
             }
         }
         public CommandType Command { get; }
@@ -64,7 +64,8 @@ namespace GitHub.Packets
             set
             {
                 _errorInfo = value;
-                Error = 1;
+                if (value != "OK")
+                    Error = 1;
             }
         }
 
@@ -73,14 +74,17 @@ namespace GitHub.Packets
             ErrorInfo = "Bad list of arguments";
         }
 
-        public bool IsValidArguments(int count)
+        /// <summary>
+        /// Check is there invalid list of arguments and if is invalid invoke <see cref="SetAsInvalidArgument"/>
+        /// </summary>
+        public bool IsInvalidArguments(int count)
         {
             if (Args.Count() != count)
             {
                 SetAsInvalidArgument();
-                return false;
+                return true;
             }
-            return true;
+            return false;
         }
     }
 }

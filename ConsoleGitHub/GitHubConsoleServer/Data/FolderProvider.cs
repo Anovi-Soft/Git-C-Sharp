@@ -12,14 +12,14 @@ namespace GitHubConsoleServer.Data
     class FolderProvider : IVersionDataProvider
     {
         private string projectsPath = "Projects";
+        private string clientPath;
         private Logger logger;
         public FolderProvider(string clientName, string ip="Unknown IP")
         {
-            clientPath = clientName;
+            clientPath = Path.Combine(projectsPath, clientName);
             logger = new Logger(clientPath, ip);
+            if (!Directory.Exists(clientPath)) Directory.CreateDirectory(clientPath);
         }
-
-        private string clientPath;
         private string FullPath(string name)
         {
             var path = Path.Combine(clientPath, name);
