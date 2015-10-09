@@ -79,7 +79,7 @@ namespace GitHub.Packets
         /// </summary>
         public bool IsInvalidArguments(int count)
         {
-            if (Args.Count() != count)
+            if (Args.Count(a=>a.Trim().Any()) != count)
             {
                 SetAsInvalidArgument();
                 return true;

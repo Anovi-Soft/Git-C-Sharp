@@ -19,33 +19,35 @@ namespace GitHubConsoleServer.Data
             clientPath = path;
             this.ip = ip;
             var allLogsPath = Path.Combine(clientPath, fileName);
-            if (!File.Exists(allLogsPath)) File.Create(allLogsPath);
         }
 
         public void Log(string projectName, string log)
         {
-            var info = log.Split('\n').Select(a => $"[{Time()}][{ip}] - {log}");
+            var info = log.Split('\n')
+                .Select(a => $"[{Time()}][{ip}] - {log}")
+                .ToList();
             var projectsLogsPath = Path.Combine(clientPath, projectName, fileName);
             var allLogsPath = Path.Combine(clientPath, fileName);
 
-            if (!File.Exists(projectsLogsPath)) File.Create(projectsLogsPath);
-            FileHelper.UnSetReadOnlyHidden(projectsLogsPath);
-            if (!File.Exists(allLogsPath)) File.Create(allLogsPath);
-            FileHelper.UnSetReadOnlyHidden(allLogsPath);
+            using (var stream = new FileStream(projectsLogsPath, FileMode.OpenOrCreate))//File.Open(projectsLogsPath, FileMode.OpenOrCreate, FileAccess.Write))))
+            using (var se = new StreamWriter(stream))
+                info.ForEach(se.WriteLine);
 
-            File.AppendAllLines(projectsLogsPath, info);
-            info = info.Select(a => $"[{projectName}]{a}");
-            File.AppendAllLines(allLogsPath, info);
+            info = info.Select(a => $"[{projectName}]{a}").ToList();
 
-            foreach(var line in info)
-                Console.WriteLine(line);
+            //using (var stream = File.Open(allLogsPath, FileMode.OpenOrCreate, FileAccess.Write))
+            using (var stream = new FileStream(allLogsPath, FileMode.OpenOrCreate))
+            using (var se = new StreamWriter(stream))
+                info.ForEach(se.WriteLine);
+
+            info.ForEach(Console.WriteLine);
         }
 
         public string Info(string projectName = null)
         {
-            var path = projectName == null
-                ? Path.Combine(clientPath, fileName)
-                : Path.Combine(clientPath, projectName, fileName);
+            var path = projectName == null ?
+                Path.Combine(clientPath, fileName) :
+                Path.Combine(clientPath, projectName, fileName);
             return File.ReadAllText(path);
         }
 

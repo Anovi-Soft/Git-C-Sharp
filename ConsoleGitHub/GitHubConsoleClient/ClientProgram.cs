@@ -187,7 +187,7 @@ namespace GitHubConsoleClient
         }
         static void Add(string[] args)
         {
-            var packet = socket.SendAndRecivePacket(CommandType.Add, args[0]);
+            var packet = socket.SendAndRecivePacket(CommandType.Add, args.FirstOrDefault());
             Console.WriteLine(packet.ErrorInfo);
         }
         static void Clone(string[] args)

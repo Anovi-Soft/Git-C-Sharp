@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
 using GitHub;
 using GitHub.Network;
 using GitHub.Packets;
@@ -65,11 +60,11 @@ namespace GitHubConsoleServer.Workers
                 catch (GitHubException e)
                 {
                     packet.ErrorInfo = e.Message;
-                    Console.WriteLine(e.Message);
                 }
                 catch (SocketException)
                 {
                     Console.WriteLine($"[{Logger.Time()}] Connection lost");
+                    return;
                 }
                 catch (Exception e)
                 {
@@ -78,7 +73,9 @@ namespace GitHubConsoleServer.Workers
                 }
                 finally
                 {
-                    socket.SendPacket(packet);
+                    try{socket.SendPacket(packet);}
+                    catch (Exception){/*ignored*/}
+                    Console.WriteLine($"{packet.Command} {Join(" ",packet.Args)} {packet.ErrorInfo}");
                 }
             
         }
@@ -116,6 +113,7 @@ namespace GitHubConsoleServer.Workers
 
         private void Add()
         {
+            if (packet.IsInvalidArguments(1)) return;
             provider.PushProject(packet.Args.First());
         }
         private void Clone()
