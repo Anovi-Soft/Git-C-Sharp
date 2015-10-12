@@ -64,7 +64,7 @@ namespace GitHub.Network
         public IArchive RecieveArchive()
         {
             var path = FileHelper.GetFreeTmpName(".zip");
-            var bytes = new byte[4];
+            var bytes = new byte[8];
             Receive(bytes);
             var fileSize = BitConverter.ToInt32(bytes, 0);
             using (var bw = new BinaryWriter(File.Open(path, FileMode.OpenOrCreate, FileAccess.Write)))

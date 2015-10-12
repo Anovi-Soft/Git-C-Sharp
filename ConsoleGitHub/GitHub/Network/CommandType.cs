@@ -17,6 +17,6 @@ namespace GitHub.Network
         Login=256,
         Registration = 512,
         Auth = Login | Registration | GoodBy,
-        WorkerCommands = Add | Update | Commit | Revert | Log | GoodBy
+        WorkerCommands = Add | Clone | Update | Commit | Revert | Log | GoodBy
     }
 }

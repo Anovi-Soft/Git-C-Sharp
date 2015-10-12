@@ -1,5 +1,4 @@
 C:\Users\Andrew\Documents\GitHub\Git-C-\ConsoleGitHub\GitHubConsoleServer\bin\Debug\GitHubConsoleServer.exe.config
-C:\Users\Andrew\Documents\GitHub\Git-C-\ConsoleGitHub\GitHubConsoleServer\obj\Debug\GitHubConsoleServer.csprojResolveAssemblyReference.cache
 C:\Users\Andrew\Documents\GitHub\Git-C-\ConsoleGitHub\GitHubConsoleServer\bin\Debug\GitHubConsoleServer.exe
 C:\Users\Andrew\Documents\GitHub\Git-C-\ConsoleGitHub\GitHubConsoleServer\bin\Debug\GitHubConsoleServer.pdb
 C:\Users\Andrew\Documents\GitHub\Git-C-\ConsoleGitHub\GitHubConsoleServer\obj\Debug\GitHubConsoleServer.exe
@@ -7,3 +6,4 @@ C:\Users\Andrew\Documents\GitHub\Git-C-\ConsoleGitHub\GitHubConsoleServer\obj\De
 C:\Users\Andrew\Documents\GitHub\Git-C-\ConsoleGitHub\GitHubConsoleServer\bin\Debug\GitHub.dll
 C:\Users\Andrew\Documents\GitHub\Git-C-\ConsoleGitHub\GitHubConsoleServer\bin\Debug\Ionic.Zip.dll
 C:\Users\Andrew\Documents\GitHub\Git-C-\ConsoleGitHub\GitHubConsoleServer\bin\Debug\GitHub.pdb
+C:\Users\Andrew\Documents\GitHub\Git-C-\ConsoleGitHub\GitHubConsoleServer\obj\Debug\GitHubConsoleServer.csprojResolveAssemblyReference.cache

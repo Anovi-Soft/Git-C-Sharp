@@ -10,6 +10,7 @@ using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using GitHub.Network;
+using GitHub.Packets;
 
 namespace GitHubConsoleClient
 {
@@ -17,7 +18,7 @@ namespace GitHubConsoleClient
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello Client");
+            Console.WriteLine("{0}Hello client{0}", new string('-', 10));
             socket =
                new AdvancedSocket(
                    new Socket(
@@ -28,14 +29,16 @@ namespace GitHubConsoleClient
             {
                 //HELLO
                 if (!Hello()) return;
+                Console.WriteLine("{0}GitStart{0}", new string('-', 10));
                 //AUTH
                 while (Auth()) ;
+                Console.WriteLine("{0}WellDone{0}", new string('-', 10));
                 //WORK
                 Work();
             }
             catch (SocketException)
             {
-                Console.WriteLine("Connection lost");
+                Console.WriteLine("{0}Connection lost{0}", new string('-', 10));
             }
             catch (GitHub.GitHubException)
             {
@@ -49,6 +52,7 @@ namespace GitHubConsoleClient
         static bool Hello()
         {
             string ip;
+            //Console.WriteLine("{0Input ip{0}", new string('-', 10));
             //ip = Console.ReadLine();
             ip = "127.0.0.1";
             socket.Connect(ip, AdvancedSocket.Port);
@@ -121,6 +125,7 @@ namespace GitHubConsoleClient
 
         private static HashSet<string> namesList = new HashSet<string>();
         private static string currentProject = "";
+        private static ICommandPacket packet;
         static void Work()
         {
             Load();
@@ -135,6 +140,7 @@ namespace GitHubConsoleClient
                         continue;
                     }
                     commandTranslation[line.First()].Invoke(line.Skip(1).ToArray());
+                    Console.WriteLine(packet.ErrorInfo);
                 }
             }
             catch(Exception)
@@ -187,12 +193,19 @@ namespace GitHubConsoleClient
         }
         static void Add(string[] args)
         {
-            var packet = socket.SendAndRecivePacket(CommandType.Add, args.FirstOrDefault());
-            Console.WriteLine(packet.ErrorInfo);
+            packet = socket.SendAndRecivePacket(CommandType.Add, args.FirstOrDefault());
         }
         static void Clone(string[] args)
         {
+            var isFlag = args.Last().Equals(".");
+            packet = socket.SendAndRecivePacket(CommandType.Clone, args.FirstOrDefault());
+            if (packet.Error != 0) return;
+            var archive = socket.RecieveArchive();
+            archive.UnpackTo(args[1]);
 
+
+
+            packet = socket.RecivePacket();
         }
         static void Update(string[] args)
         {

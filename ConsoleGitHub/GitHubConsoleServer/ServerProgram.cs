@@ -51,7 +51,7 @@ namespace GitHubConsoleServer
                     {
                         currentTasksCount++;
                         int numOfTask = listTasks.Count;
-                        Console.WriteLine($"[{Logger.Time()}] Task№{numOfTask} start working");
+                        Console.WriteLine($"[{Logger.Time()}] TaskN{numOfTask} start working");
                         new BaseServerWorker().Run(_socket);
                         _socket.Close();
                         return numOfTask;
@@ -62,7 +62,7 @@ namespace GitHubConsoleServer
                     task.ContinueWith(numOfTask =>
                     {
                         currentTasksCount--;
-                        Console.WriteLine($"[{Logger.Time()}] Task№{numOfTask} end working");
+                        Console.WriteLine($"[{Logger.Time()}] TaskN{numOfTask.Result} end working");
                     });
                 }
                 catch (Exception e)

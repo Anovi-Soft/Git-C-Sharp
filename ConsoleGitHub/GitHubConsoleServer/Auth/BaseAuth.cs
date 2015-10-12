@@ -34,8 +34,8 @@ namespace GitHubConsoleServer.Auth
                 socket.SendPacket(packet);
                 return string.Empty;
             }
-            if (dictAuth.ContainsKey(packet.Args.First()) &&
-                dictAuth[packet.Args.First()] == packet.Args.Last())
+            if (dictAuth.ContainsKey(packet.Args.First().ToLower()) &&
+                dictAuth[packet.Args.First().ToLower()] == packet.Args.Last())
             {
                 socket.SendPacket(packet);
                 Console.WriteLine($"[{Logger.Time()}] User {packet.Args.First()} logined");
@@ -51,8 +51,8 @@ namespace GitHubConsoleServer.Auth
             Load();
             if (packet.IsInvalidArguments(2))
             { }
-            else if (dictAuth.ContainsKey(packet.Args.First()))
-                packet.ErrorInfo = $"Name '{packet.Args.First()}' is busy";
+            else if (dictAuth.ContainsKey(packet.Args.First().ToLower()))
+                packet.ErrorInfo = $"Name '{packet.Args.First().ToLower()}' is busy";
             
             socket.SendPacket(packet);
 

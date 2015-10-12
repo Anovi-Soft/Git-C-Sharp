@@ -36,7 +36,7 @@ namespace GitHubConsoleServer.Workers
                             Add();
                             break;
                         case CommandType.Clone:
-
+                            Clone();
                             break;
                         case CommandType.Commit:
 
@@ -57,14 +57,14 @@ namespace GitHubConsoleServer.Workers
                             return;
                     }
                 }
+                catch (SocketException)
+                {
+                    packet.ErrorInfo = "Connection lost";
+                    return;
+                }
                 catch (GitHubException e)
                 {
                     packet.ErrorInfo = e.Message;
-                }
-                catch (SocketException)
-                {
-                    Console.WriteLine($"[{Logger.Time()}] Connection lost");
-                    return;
                 }
                 catch (Exception e)
                 {
@@ -75,7 +75,7 @@ namespace GitHubConsoleServer.Workers
                 {
                     try{socket.SendPacket(packet);}
                     catch (Exception){/*ignored*/}
-                    Console.WriteLine($"{packet.Command} {Join(" ",packet.Args)} {packet.ErrorInfo}");
+                    Console.WriteLine($"[{Logger.Time()}][{userName}] {packet.Command} {Join(" ",packet.Args)} {packet.ErrorInfo}");
                 }
             
         }
@@ -118,7 +118,10 @@ namespace GitHubConsoleServer.Workers
         }
         private void Clone()
         {
-
+            if (packet.IsInvalidArguments(1)) return;
+            var archive = provider.TakeVersion(packet.Args.First());
+            socket.SendPacket(packet);
+            socket.SendArchive(archive);
         }
         private void Update()
         {
