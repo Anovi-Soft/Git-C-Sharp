@@ -10,5 +10,6 @@ namespace GitHubConsoleServer.Data
         void JoinArchive(string name, IArchive archive, IVersion version = null);
         IArchive TakeVersion(string name, IVersion version = null);
         string Info(string name=null);
+        bool Contain(string name);
     }
 }

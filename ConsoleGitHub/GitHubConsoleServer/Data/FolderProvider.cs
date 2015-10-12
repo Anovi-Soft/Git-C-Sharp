@@ -34,6 +34,11 @@ namespace GitHubConsoleServer.Data
             if (Directory.Exists(path))
                 throw new GitHubException("Project allready exists");
             Directory.CreateDirectory(path);
+            var fileName = new BaseVersion().Zero().ToString();
+            fileName = fileName + ".zip";
+            fileName = Path.Combine(path, fileName);
+            var emptyArchive = ArchiveZip.CreateEmptyArchive();
+            emptyArchive.SaveTo(fileName);
             logger.Log(name, "Project pushed");
 
         }
@@ -47,19 +52,21 @@ namespace GitHubConsoleServer.Data
 
         public void JoinArchive(string name, IArchive archive, IVersion version = null)
         {
-            if (version == null)
+            if (version != null)
                 throw new GitHubException("Method JoinArchive with version NotImplemented", new NotImplementedException());
             var path = FullPath(name);
-            version = LastVersion(path).AddVersion();
-            archive.SaveTo(Path.Combine(path, version.ToString()));
+            version = LastVersion(path).AddVersion(1);
+            archive.SaveTo(Path.Combine(path, version+".zip"));
             logger.Log(name, $"Version {version} added");
         }
 
-        public IArchive TakeVersion(string name, IVersion version)
+        public IArchive TakeVersion(string name, IVersion version = null)
         {
             var path = FullPath(name);
-            path = Path.Combine(path, version.ToString());
-            if (!Directory.Exists(path))
+            if (version == null)
+                version = LastVersion(path);
+            path = Path.Combine(path, version +".zip");
+            if (!File.Exists(path))
                 throw new GitHubException($"Project {name} do not contain {version}");
             logger.Log(name, $"Version {version} revert");
             return ArchiveFarm.Open(path);
@@ -79,11 +86,21 @@ namespace GitHubConsoleServer.Data
                 FullPath(name);
             return logger.Info(name);
         }
+
+        public bool Contain(string name)
+        {
+            var path = FullPath(name);
+            return Directory.Exists(path);
+        }
+
         private static IVersion LastVersion(string path)
         {
             var last = Directory.GetFiles(path, "*.zip").OrderBy(a => a).LastOrDefault();
-            var version = last == null ? new BaseVersion().Zero() : VersionFarm.Parse(last);
-            return version;
+
+            if (last == null)
+                return new BaseVersion().Zero();
+            var version = Path.GetFileNameWithoutExtension(last);
+            return VersionFarm.Parse(version);
         }
     }
 }

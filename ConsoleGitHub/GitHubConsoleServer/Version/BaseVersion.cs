@@ -1,4 +1,5 @@
 ﻿using System;
+using GitHub;
 
 namespace ConsoleGitHub.Data.Version
 {
@@ -24,7 +25,7 @@ namespace ConsoleGitHub.Data.Version
                 {
                     // ignored
                 }
-            throw new FormatException($"This string \"{version}\" can`t be parsed");
+            throw new GitHubException($"This string \"{version}\" can`t be parsed, use 'vX' where X is number");
         }
 
         public override string ToString() => "v" + _lvl;

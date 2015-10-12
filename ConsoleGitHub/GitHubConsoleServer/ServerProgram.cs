@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using GitHub.Network;
@@ -71,17 +69,42 @@ namespace GitHubConsoleServer
                 }
         }
 
+        static Dictionary<string, Action> serverCommands = new Dictionary<string, Action>
+        {
+            {"sleep", () => Environment.Exit(0)},
+            {"restart", Restart},
+        };
 
+        private static string ReadLine() => Console.ReadLine().Trim().ToLower();
+        
 
+        static void Restart()
+        {
+            if (Directory.Exists("Projects")) Directory.Delete("Projects", true);
+            if (File.Exists("auth.bin")) File.Delete("auth.bin");
+            Console.WriteLine("All Data restart");
+        }
 
         static void Main(string[] args)
         {
             Console.WriteLine($"[{Logger.Time()}] Hello Server!");
             var task = Task.Factory.StartNew(() => MainLoop(new BaseServerWorker()));
+            var inputTask = Task.Run(() => ReadLine());
+            
             while (!task.IsCompleted)
             {
                 Thread.Sleep(1000);
+                if (inputTask.IsCompleted)
+                {
+                    if (serverCommands.ContainsKey(inputTask.Result))
+                        serverCommands[inputTask.Result].Invoke();
+                    else
+                        Console.WriteLine("What?");
+                    inputTask = Task.Run(() => ReadLine());
+                }
             }
+            
         }
+
     }
 }

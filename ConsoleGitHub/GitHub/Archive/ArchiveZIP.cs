@@ -15,7 +15,6 @@ namespace GitHub.Archive
         {
             _folderSize = folderSize;
             Path = path;
-            FileHelper.SetReadOnlyHidden(path);
         }
         ~ArchiveZip()
         {
@@ -64,9 +63,14 @@ namespace GitHub.Archive
             return _folderSize;
         }
 
-        public void UnpackTo(string path, Action<int> statusChangeAction=null)
+        public void UnpackTo(string path, bool hard = true, Action<int> statusChangeAction=null)
         {
             FileHelper.CreateAllFolders(path);
+            if (hard)
+            {
+                Directory.Delete(path, true);
+                FileHelper.CreateAllFolders(path);
+            }
             if (path == null) throw new ArgumentNullException(nameof(path));
             using (var zipFile = ZipFile.Read(Path))
             {
@@ -79,12 +83,22 @@ namespace GitHub.Archive
 
         public Task UnpackToAsync(string path, Action<int> statusChangeAction=null)
         {
-            return Task.Run(() => ((IArchive) this).UnpackTo(path, statusChangeAction));
+            return Task.Run(() => 
+            UnpackTo(path, true,statusChangeAction));
         }
 
         public byte[] GetBytes()
         {
             return File.ReadAllBytes(Path);
+        }
+
+        public static IArchive CreateEmptyArchive()
+        {
+            var path = FileHelper.GetFreeTmpName("zip");
+            FileHelper.CreateAllFolders(path);
+            using (var zipFile = new ZipFile())
+                zipFile.Save(path);
+                return new ArchiveZip(path,0);
         }
         
     }

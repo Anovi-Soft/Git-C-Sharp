@@ -66,7 +66,8 @@ namespace GitHub.Network
             var path = FileHelper.GetFreeTmpName(".zip");
             var bytes = new byte[8];
             Receive(bytes);
-            var fileSize = BitConverter.ToInt32(bytes, 0);
+            var fileSize = BitConverter.ToInt64(bytes, 0);
+            FileHelper.CreateAllFolders(path);
             using (var bw = new BinaryWriter(File.Open(path, FileMode.OpenOrCreate, FileAccess.Write)))
             {
                 bytes = new byte[PacketSize];
@@ -76,6 +77,7 @@ namespace GitHub.Network
                         bytes = new byte[fileSize - i];
                     Receive(bytes);
                     bw.Write(bytes);
+                    bw.Flush();
                 }
             }
             return new ArchiveZip(path);

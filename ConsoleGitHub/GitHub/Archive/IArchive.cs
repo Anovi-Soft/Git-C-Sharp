@@ -10,7 +10,7 @@ namespace GitHub.Archive
         void SaveTo(string path);
         long SizeOfArchive();
         long SizeOfDirectory();
-        void UnpackTo(string path, Action<int> statusChangeAction = null);
+        void UnpackTo(string path, bool hard = true, Action<int> statusChangeAction = null);
         Task UnpackToAsync(string path, Action<int> statusChangeAction = null);
     }
 }

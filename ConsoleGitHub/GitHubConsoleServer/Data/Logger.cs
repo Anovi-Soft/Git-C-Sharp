@@ -28,15 +28,15 @@ namespace GitHubConsoleServer.Data
                 .ToList();
             var projectsLogsPath = Path.Combine(clientPath, projectName, fileName);
             var allLogsPath = Path.Combine(clientPath, fileName);
-
-            using (var stream = new FileStream(projectsLogsPath, FileMode.OpenOrCreate))//File.Open(projectsLogsPath, FileMode.OpenOrCreate, FileAccess.Write))))
+            
+            using (var stream = new FileStream(projectsLogsPath, FileMode.Append))//File.Open(projectsLogsPath, FileMode.OpenOrCreate, FileAccess.Write))))
             using (var se = new StreamWriter(stream))
                 info.ForEach(se.WriteLine);
 
             info = info.Select(a => $"[{projectName}]{a}").ToList();
 
             //using (var stream = File.Open(allLogsPath, FileMode.OpenOrCreate, FileAccess.Write))
-            using (var stream = new FileStream(allLogsPath, FileMode.OpenOrCreate))
+            using (var stream = new FileStream(allLogsPath, FileMode.Append))
             using (var se = new StreamWriter(stream))
                 info.ForEach(se.WriteLine);
 

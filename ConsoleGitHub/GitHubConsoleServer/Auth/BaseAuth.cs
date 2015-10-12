@@ -34,12 +34,13 @@ namespace GitHubConsoleServer.Auth
                 socket.SendPacket(packet);
                 return string.Empty;
             }
-            if (dictAuth.ContainsKey(packet.Args.First().ToLower()) &&
-                dictAuth[packet.Args.First().ToLower()] == packet.Args.Last())
+            var login = packet.Args.First().Trim().ToLower();
+            if (dictAuth.ContainsKey(login) &&
+                dictAuth[login] == packet.Args.Last().Trim())
             {
                 socket.SendPacket(packet);
-                Console.WriteLine($"[{Logger.Time()}] User {packet.Args.First()} logined");
-                return packet.Args.First();
+                Console.WriteLine($"[{Logger.Time()}] User {login} logined");
+                return login;
             }
             packet.ErrorInfo = "Wrong login or password";
             socket.SendPacket(packet);
@@ -49,17 +50,22 @@ namespace GitHubConsoleServer.Auth
         public string Registration(ICommandPacket packet)
         {
             Load();
+            string login = "";
             if (packet.IsInvalidArguments(2))
             { }
-            else if (dictAuth.ContainsKey(packet.Args.First().ToLower()))
-                packet.ErrorInfo = $"Name '{packet.Args.First().ToLower()}' is busy";
+            else
+            {
+                login = packet.Args.First().Trim().ToLower();
+                if (dictAuth.ContainsKey(login))
+                packet.ErrorInfo = $"Name '{login}' is busy";
+            }
             
             socket.SendPacket(packet);
 
             if (packet.Error != 0)
                 return string.Empty;
-            dictAuth.Add(packet.Args.First(), packet.Args.Last());
-            Console.WriteLine($"[{Logger.Time()}] User {packet.Args.First()} registration end");
+            dictAuth.Add(login, packet.Args.Last());
+            Console.WriteLine($"[{Logger.Time()}] User {login} registration end");
             Dump();
             return packet.Args.First();
         }
