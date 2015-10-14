@@ -1,8 +1,10 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Net;
 using System.Net.Sockets;
 using System.Runtime.Hosting;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -43,8 +45,13 @@ namespace GitHubConsoleClient
             }
             catch (GitHub.GitHubException)
             {
-                
+
             }
+            finally
+            {
+                socket.Close();
+            }
+
             Console.ReadKey();
         }
         private static string yn = "[y/n]";
@@ -52,11 +59,18 @@ namespace GitHubConsoleClient
 
         static bool Hello()
         {
-            string ip;
-            //Console.WriteLine("{0Input ip{0}", new string('-', 10));
-            //ip = Console.ReadLine();
-            ip = "127.0.0.1";
-            socket.Connect(ip, AdvancedSocket.Port);
+            IPAddress ip;
+            string input;
+            do
+            {
+                Console.WriteLine("{0}Input ip{0}", new string('-', 10));
+                input = Console.ReadLine().Trim();
+                IPAddress.TryParse(input, out ip);
+            } while (ip==null);
+
+            //ip = "127.0.0.1";
+            socket.Connect(input, AdvancedSocket.Port);
+            
             var packet = socket.SendAndRecivePacket(CommandType.Hello, "");
             if (packet.Error == 0)
             {
@@ -154,7 +168,12 @@ namespace GitHubConsoleClient
                 {"update", Update},
                 {"commit", Commit},
                 {"revert", Revert},
-                {"log", Log}
+                {"log", Log},
+                {"goodbuy", a =>
+                {
+                    socket.SendPacket(CommandType.GoodBy, "");
+                    throw new SystemException();
+                }}
             };
 
         private static string currentProject = "";
@@ -166,7 +185,7 @@ namespace GitHubConsoleClient
             {
                 while (true)
                 {
-                    var line = Console.ReadLine().Split(' ').Select(a=>a.Trim().ToLower());
+                    var line = Console.ReadLine().Split(' ').Select(a => a.Trim().ToLower());
                     if (!commandTranslation.ContainsKey(line.First()))
                     {
                         Console.WriteLine("Unknown input");
@@ -176,6 +195,9 @@ namespace GitHubConsoleClient
                     if ("set,list,help,project".Split(',').Contains(line.First())) continue;
                     Console.WriteLine(packet.ErrorInfo);
                 }
+            }
+            catch (SystemException)
+            {
             }
             catch(Exception)
             {
@@ -277,10 +299,11 @@ namespace GitHubConsoleClient
         {
             if (currentProject == string.Empty)
             {
-                Console.WriteLine("Set current project");
+                packet = new CommandPacket(CommandType.Revert, "") {ErrorInfo = "Set current project"};
                 return;
             }
             bool hard = args.Count() == 2 && args[1] == "-hard";
+            hard = args.Count() == 1 || hard;
             packet = socket.SendAndRecivePacket(CommandType.Revert, currentProject+" "+ args.FirstOrDefault());
             if (packet.Error != 0) return;
             var archive = socket.RecieveArchive();
@@ -290,7 +313,7 @@ namespace GitHubConsoleClient
         }
         static void Log(string[] args)
         {
-            packet = socket.SendAndRecivePacket(CommandType.Log, args.First());
+            packet = socket.SendAndRecivePacket(CommandType.Log, args.FirstOrDefault());
         }
     }
 }

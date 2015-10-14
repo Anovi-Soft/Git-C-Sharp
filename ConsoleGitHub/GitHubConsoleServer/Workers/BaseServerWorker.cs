@@ -52,7 +52,7 @@ namespace GitHubConsoleServer.Workers
                             Log();
                             break;
                         case CommandType.GoodBy:
-                            Console.WriteLine($"[{DateTime.Now}] client say goodby");
+                            Console.WriteLine($"[{Logger.Time()}] client say goodby");
                             return;
                         default:
                             return;
@@ -117,6 +117,7 @@ namespace GitHubConsoleServer.Workers
         {
             if (packet.IsInvalidArguments(1)) return;
             provider.PushProject(packet.Args.First());
+            provider.Log(packet.Args.First(), $"Project {packet.Args.First()} added");
         }
         private void Clone()
         {
@@ -124,6 +125,7 @@ namespace GitHubConsoleServer.Workers
             var archive = provider.TakeVersion(packet.Args.First());
             socket.SendPacket(packet);
             socket.SendArchive(archive);
+            provider.Log(packet.Args.First(), $"Project {packet.Args.First()} cloned");
         }
         private void Update()
         {
@@ -136,6 +138,7 @@ namespace GitHubConsoleServer.Workers
             var archive = provider.TakeVersion(packet.Args.First());
             socket.SendPacket(packet);
             socket.SendArchive(archive);
+            provider.Log(packet.Args.First(), $"Update project {packet.Args.First()} to user");
 
         }
         private void Commit()
@@ -149,20 +152,27 @@ namespace GitHubConsoleServer.Workers
             socket.SendPacket(packet);
             var archive = socket.RecieveArchive();
             provider.JoinArchive(packet.Args.First(), archive);
+            provider.Log(packet.Args.First(), $"Project {packet.Args.First()} commit to server");
         }
         private void Revert()
         {
-            if (packet.IsInvalidArguments(2)) return;
+            if (packet.Args.Count() > 2)
+            {
+                packet.SetAsInvalidArgument();
+                return;
+            }
             if (!provider.Contain(packet.Args.First()))
             {
                 packet.ErrorInfo = "Project do not exist";
                 return;
             }
-            var version = new BaseVersion().Parse(packet.Args[1]);
+            var version = packet.Args.Count() == 2 ?
+                new BaseVersion().Parse(packet.Args[1]) :
+                null;
             var archive = provider.TakeVersion(packet.Args.First(), version);
             socket.SendPacket(packet);
             socket.SendArchive(archive);
-
+            provider.Log(packet.Args.First(), $"Project {packet.Args.First()} revert to user");
         }
         private void Log()
         {

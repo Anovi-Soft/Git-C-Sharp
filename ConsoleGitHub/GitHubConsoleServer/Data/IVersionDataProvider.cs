@@ -11,5 +11,6 @@ namespace GitHubConsoleServer.Data
         IArchive TakeVersion(string name, IVersion version = null);
         string Info(string name=null);
         bool Contain(string name);
+        void Log(string name, string logDate);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using GitHub.Util;
 using Ionic.Zip;
@@ -66,11 +67,25 @@ namespace GitHub.Archive
         public void UnpackTo(string path, bool hard = true, Action<int> statusChangeAction=null)
         {
             FileHelper.CreateAllFolders(path);
-            if (hard)
-            {
-                Directory.Delete(path, true);
-                FileHelper.CreateAllFolders(path);
-            }
+            var i = 0;
+            while (hard) try
+                {
+                    Directory.Delete(path, true);
+                    FileHelper.CreateAllFolders(path);
+                    hard = false;
+                }
+                catch (Exception)
+                {
+                    Thread.Sleep(1000);
+                    i++;
+                    if (i != 10)
+                    {
+                        Console.WriteLine($"Cant unpack to {path} -hard, we are try again");
+                        continue;
+                    }
+                    Console.WriteLine($"Cant unpack to {path} -hard");
+                    return;
+                }
             if (path == null) throw new ArgumentNullException(nameof(path));
             using (var zipFile = ZipFile.Read(Path))
             {

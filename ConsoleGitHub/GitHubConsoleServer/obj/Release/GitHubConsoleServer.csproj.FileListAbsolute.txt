@@ -1,1 +1,8 @@
 C:\Users\Andrew\Documents\GitHub\Git-C-\ConsoleGitHub\GitHubConsoleServer\bin\Release\GitHubConsoleServer.exe.config
+C:\Users\Andrew\Documents\GitHub\Git-C-\ConsoleGitHub\GitHubConsoleServer\bin\Release\GitHubConsoleServer.exe
+C:\Users\Andrew\Documents\GitHub\Git-C-\ConsoleGitHub\GitHubConsoleServer\bin\Release\GitHubConsoleServer.pdb
+C:\Users\Andrew\Documents\GitHub\Git-C-\ConsoleGitHub\GitHubConsoleServer\bin\Release\GitHub.dll
+C:\Users\Andrew\Documents\GitHub\Git-C-\ConsoleGitHub\GitHubConsoleServer\bin\Release\Ionic.Zip.dll
+C:\Users\Andrew\Documents\GitHub\Git-C-\ConsoleGitHub\GitHubConsoleServer\bin\Release\GitHub.pdb
+C:\Users\Andrew\Documents\GitHub\Git-C-\ConsoleGitHub\GitHubConsoleServer\obj\Release\GitHubConsoleServer.exe
+C:\Users\Andrew\Documents\GitHub\Git-C-\ConsoleGitHub\GitHubConsoleServer\obj\Release\GitHubConsoleServer.pdb

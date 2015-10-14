@@ -12,8 +12,8 @@ namespace GitHubConsoleServer.Data
     class FolderProvider : IVersionDataProvider
     {
         private string projectsPath = "Projects";
-        private string clientPath;
-        private Logger logger;
+        private readonly string clientPath;
+        private readonly Logger logger;
         public FolderProvider(string clientName, string ip="Unknown IP")
         {
             clientPath = Path.Combine(projectsPath, clientName);
@@ -39,14 +39,12 @@ namespace GitHubConsoleServer.Data
             fileName = Path.Combine(path, fileName);
             var emptyArchive = ArchiveZip.CreateEmptyArchive();
             emptyArchive.SaveTo(fileName);
-            logger.Log(name, "Project pushed");
 
         }
 
         public void DeleteProject(string name)
         {
             var path = FullPath(name);
-            logger.Log(name, "Project delete");
             Directory.Delete(path, true);
         }
 
@@ -57,7 +55,6 @@ namespace GitHubConsoleServer.Data
             var path = FullPath(name);
             version = LastVersion(path).AddVersion(1);
             archive.SaveTo(Path.Combine(path, version+".zip"));
-            logger.Log(name, $"Version {version} added");
         }
 
         public IArchive TakeVersion(string name, IVersion version = null)
@@ -68,7 +65,6 @@ namespace GitHubConsoleServer.Data
             path = Path.Combine(path, version +".zip");
             if (!File.Exists(path))
                 throw new GitHubException($"Project {name} do not contain {version}");
-            logger.Log(name, $"Version {version} revert");
             return ArchiveFarm.Open(path);
         }
 
@@ -85,6 +81,12 @@ namespace GitHubConsoleServer.Data
             if (name != null)
                 FullPath(name);
             return logger.Info(name);
+        }
+
+        public void Log(string name, string logDate)
+        {
+            FullPath(name);
+            logger.Log(name, logDate);
         }
 
         public bool Contain(string name)

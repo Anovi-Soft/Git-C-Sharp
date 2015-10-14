@@ -37,10 +37,11 @@ namespace GitHub.Packets
         public CommandType Command { get; }
         private readonly string _args;
 
-        public string[] Args => _args.Split(' ')
+        public string[] Args => _args?.Split(' ')
             .Select(a => a)
             .Where(a => a.Any())
-            .ToArray();
+            .ToArray() ??
+            new string[0];
 
         public byte[] Bytes
         {
@@ -79,12 +80,9 @@ namespace GitHub.Packets
         /// </summary>
         public bool IsInvalidArguments(int count)
         {
-            if (Args.Count(a=>a.Trim().Any()) != count)
-            {
-                SetAsInvalidArgument();
-                return true;
-            }
-            return false;
+            if (Args.Count(a => a.Trim().Any()) == count) return false;
+            SetAsInvalidArgument();
+            return true;
         }
     }
 }

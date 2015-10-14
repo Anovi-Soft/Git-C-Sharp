@@ -3,3 +3,4 @@ C:\Users\Andrew\Documents\GitHub\Git-C-\ConsoleGitHub\GitHub\bin\Release\GitHub.
 C:\Users\Andrew\Documents\GitHub\Git-C-\ConsoleGitHub\GitHub\bin\Release\Ionic.Zip.dll
 C:\Users\Andrew\Documents\GitHub\Git-C-\ConsoleGitHub\GitHub\obj\Release\GitHub.dll
 C:\Users\Andrew\Documents\GitHub\Git-C-\ConsoleGitHub\GitHub\obj\Release\GitHub.pdb
+C:\Users\Andrew\Documents\GitHub\Git-C-\ConsoleGitHub\GitHub\obj\Release\GitHub.csprojResolveAssemblyReference.cache
